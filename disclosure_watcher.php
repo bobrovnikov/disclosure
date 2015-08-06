@@ -49,6 +49,11 @@ while ($company = $allCompanies->fetch_assoc()) {
 
     // @todo: предусмотреть, что за одну минуту могло добавится несколько сообщений одной компании, тогда в хранологическом порядке их рассылать
     preg_match('/href="http:\/\/e-disclosure\.ru\/portal\/event\.aspx\?EventId=(.*)" style="(.*)" >(.*)<\/a>/', $page, $lastEvent);
+
+    if (empty($lastEvent[3])) {
+        continue; // если не удалось получить текст сообщения   
+    }
+
     $update = $mysqli->query("UPDATE companies SET last_message_id = '$lastEvent[1]' WHERE id = '$company[id]' LIMIT 1");
 
     $longUrl = 'http://e-disclosure.ru/portal/event.aspx?EventId=' . $lastEvent[1];
