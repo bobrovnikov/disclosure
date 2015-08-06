@@ -57,7 +57,8 @@ while ($company = $allCompanies->fetch_assoc()) {
 
     $getSubscribers = $mysqli->query("SELECT * FROM subscriptions WHERE company_id = '$company[id]'");
     if ($getSubscribers->num_rows) {
-        $text = sprintf('%s: %s %s', $company['name'], $lastEvent[3], $shortUrl);
+        $companyName = empty($company['custom_name']) ? $company['name'] : $company['custom_name'];
+        $text = sprintf('%s: %s %s', $companyName, $lastEvent[3], $shortUrl);
         while ($subscriber = $getSubscribers->fetch_assoc()) {
             sendMsgToSubscriber($text, $subscriber['subscriber_id']);
         }
