@@ -3,6 +3,7 @@
 require 'config.php';
 require 'db_connect.php';
 require 'GoogleUrlApi.php';
+require 'ShortText.php';
 
 function sendMsgToSubscriber($msg, $subscriberId) {
     global $mysqli;
@@ -21,6 +22,10 @@ function sendMsgToSubscriber($msg, $subscriberId) {
 }
 
 $allCompanies = $mysqli->query('SELECT * FROM companies ORDER BY last_check_date');
+
+$shortText = new ShortText(array(
+    'db' => $mysqli,
+));
 
 while ($company = $allCompanies->fetch_assoc()) {
     $mysqli->query("UPDATE companies SET last_check_date = NOW() WHERE id = '$company[id]' LIMIT 1");
@@ -51,7 +56,7 @@ while ($company = $allCompanies->fetch_assoc()) {
     preg_match('/href="http:\/\/e-disclosure\.ru\/portal\/event\.aspx\?EventId=(.*)" style="(.*)" >(.*)<\/a>/', $page, $lastEvent);
 
     if (empty($lastEvent[3])) {
-        continue; // если не удалось получить текст сообщения   
+        continue; // если не удалось получить текст сообщения
     }
 
     $update = $mysqli->query("UPDATE companies SET last_message_id = '$lastEvent[1]' WHERE id = '$company[id]' LIMIT 1");
@@ -63,7 +68,8 @@ while ($company = $allCompanies->fetch_assoc()) {
     $getSubscribers = $mysqli->query("SELECT * FROM subscriptions WHERE company_id = '$company[id]'");
     if ($getSubscribers->num_rows) {
         $companyName = empty($company['custom_name']) ? $company['name'] : $company['custom_name'];
-        $text = sprintf('%s: %s %s', $companyName, $lastEvent[3], $shortUrl);
+        $messageText = $shortText->shorten($lastEvent[3]);
+        $text = sprintf('%s: %s %s', $companyName, $messageText, $shortUrl);
         while ($subscriber = $getSubscribers->fetch_assoc()) {
             sendMsgToSubscriber($text, $subscriber['subscriber_id']);
         }
