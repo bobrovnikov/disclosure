@@ -1,7 +1,7 @@
 <?php
 
 define('GOOGLE_API_KEY', '');
-// @todo: сюда СМС ключ и подлкюченние к базе
+// @todo: сюда подключенние к базе
 
 define('APP_SALT', '');
 
