@@ -226,8 +226,9 @@ if ($getCompaniesIds->num_rows) {
         </div>
     </form>
 
-    <footer class="footer">
-        <p>&copy; 2015</p>
+    <footer class="footer clearfix">
+        <p class="pull-left">&copy; 2015</p>
+        <a class="pull-right hide" id="reformal-link" href="#" onclick="Reformal.widgetOpen();return false;" onmouseover="Reformal.widgetPreload();" onmouseout="Reformal.widgetAbortPreload();">Написать отзыв</a>
     </footer>
 
 </div>

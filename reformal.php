@@ -13,6 +13,11 @@
     (function() {
         var script = document.createElement('script');
         script.type = 'text/javascript'; script.async = true;
+
+        script.onload = function () {
+            $('#reformal-link').removeClass('hide');
+        };
+
         script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'media.reformal.ru/widgets/v3/reformal.js';
         document.getElementsByTagName('head')[0].appendChild(script);
     })();
